@@ -259,11 +259,11 @@ contract InvestorRelationship is Config, SeroInterface {
         totalShare = totalShare.sub(allProfit);
     }
 
-    function insert(uint256 refereeId, uint256 amount, address addr, uint8 star) internal {
+    function insert(uint256 refereeId, uint256 amount, address addr) internal {
         _beforeUpdate();
 
         indexs[addr] = investors.length;
-        investors.push(Investor({refereeId : refereeId, largeAreaId : 0, amount : amount, totalAmount : amount, returnAmount : 0, achievement : 0, otherAchievement : 0, recommendAmount : 0, profitLevel : 0, addr : addr, star : star, value : 0}));
+        investors.push(Investor({refereeId : refereeId, largeAreaId : 0, amount : amount, totalAmount : amount, returnAmount : 0, achievement : 0, otherAchievement : 0, recommendAmount : 0, profitLevel : 0, addr : addr, star : 0, value : 0}));
         returnRewards.push(ReturnReward({staticReward : 0, recommendReward : 0, starReward : 0, levelReward : 0, currentStaticReward : 0, currentIncome : 0, staticTimestamp : now, updateTimestamp : 0}));
 
         if (amount > 0) {
@@ -701,7 +701,7 @@ contract Fero is InvestorRelationship, Ownable {
 
     function registerNode(address addr) public onlyOwner {
         require(!Utils.isContract(addr));
-        insert(0, 0, addr, 4);
+        insert(0, 0, addr);
     }
 
 
@@ -735,7 +735,7 @@ contract Fero is InvestorRelationship, Ownable {
         if (index == 0) {
             uint256 refereeId = codeService.decode(refereeCode);
             require(refereeId != 0 && refereeId < investors.length);
-            insert(refereeId, msg.value, msg.sender, 0);
+            insert(refereeId, msg.value, msg.sender);
         } else {
             update(index, msg.value);
         }
